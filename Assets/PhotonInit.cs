@@ -6,6 +6,17 @@ using UnityEngine.UI;
 
 public class PhotonInit : Photon.PunBehaviour
 {
+    public InputField playerInput;
+    bool isGameStart = false;
+    string playerName = "";
+
+    public void SetPlayerName()
+    {
+        Debug.Log(playerInput.text + "를 입력하셨습니다.");
+
+        playerName  = playerInput.text;
+        isGameStart = true;
+    }
     private void Awake()
     {
         PhotonNetwork.ConnectUsingSettings("MyFps 1.0");
@@ -13,47 +24,52 @@ public class PhotonInit : Photon.PunBehaviour
 
     public override void OnJoinedLobby()
     {
-        base.OnJoinedLobby();
         Debug.Log("Joined Lobby");
-        //PhotonNetwork.CreateRoom("MyRoom");
         PhotonNetwork.JoinRandomRoom();
-        //PhotonNetwork.JoinRoom("MyRoom");
     }
-
+    
     public override void OnPhotonRandomJoinFailed(object[] codeAndMsg)
     {
-        base.OnPhotonJoinRoomFailed(codeAndMsg);
         Debug.Log("No Room");
-        PhotonNetwork.CreateRoom("MyRoom");
+        PhotonNetwork.CreateRoom("My Room");
     }
 
     public override void OnCreatedRoom()
     {
-        base.OnCreatedRoom();
         Debug.Log("Finish make a room");
     }
 
     public override void OnJoinedRoom()
     {
-        base.OnJoinedRoom();
-        Debug.Log("Joined Room");
-
-        StartCoroutine(CreatePlayer());
+        Debug.Log("Joined room");
+        StartCoroutine(this.CreatePlayer());
+        
     }
 
     IEnumerator CreatePlayer()
     {
-        PhotonNetwork.Instantiate("Player",
-                                    new Vector3(0, 0, 0),
-                                    Quaternion.identity,
-                                    0);
+        while (!isGameStart)
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+            
+        GameObject tempPlayer =  PhotonNetwork.Instantiate("Player", new Vector3(0,0,0), Quaternion.identity, 0);
+        tempPlayer.GetComponent<PlayerCtrl>().SetPlayerName(playerName);
         yield return null;
     }
-
     private void OnGUI()
     {
         GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
     }
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
 
-
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 }

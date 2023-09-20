@@ -18,6 +18,10 @@ public class FollowCam : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        if(targetTr == null)
+        {
+            return;
+        }
         tr.position = Vector3.Lerp(tr.position,
                                     targetTr.position - (targetTr.forward * dist) + (Vector3.up * height),
                                     Time.deltaTime * dampTrace);

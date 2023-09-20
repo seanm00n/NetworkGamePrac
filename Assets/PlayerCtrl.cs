@@ -7,10 +7,12 @@ public class PlayerCtrl : MonoBehaviour
     private float h = 0f;
     private float v = 0f;
     private Transform tr;
-    public float speed = 10f;
-    public float rotSpeed = 100f;
-    private Animator animator;
     private PhotonView pv;
+    public float speed = 10f;
+    public float rotSpeed = 10f;
+    private Animator animator;
+    public TextMesh playerName;
+    new string name = "";//
     private Vector3 currPos;
     private Quaternion currRot;
 
@@ -24,10 +26,9 @@ public class PlayerCtrl : MonoBehaviour
         pv.ObservedComponents[0] = this;
 
         if (pv.isMine)
-        {
             Camera.main.GetComponent<FollowCam>().targetTr = tr.Find("Cube").gameObject.transform;
 
-        }
+        
     }
 
     // Update is called once per frame
@@ -50,6 +51,7 @@ public class PlayerCtrl : MonoBehaviour
             {
                 animator.SetFloat("Speed", 0.0f);
             }
+
         }
         else
         {
@@ -61,22 +63,30 @@ public class PlayerCtrl : MonoBehaviour
             {
                 animator.SetFloat("Speed", 0.0f);
             }
-            tr.position = Vector3.Lerp(tr.position, currPos, Time.deltaTime * 10.0f);
-            tr.rotation = Quaternion.Lerp(tr.rotation, currRot, Time.deltaTime * 10.0f);
         }
+        tr.position = Vector3.Lerp(tr.position, currPos, Time.deltaTime*10.0f);
+        tr.rotation = Quaternion.Lerp(tr.rotation, currRot, Time.deltaTime *10.0f);//
+        
     }
-
+    
     private void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
         {
             stream.SendNext(tr.position);
             stream.SendNext(tr.rotation);
+            stream.SendNext(name);
         }
         else
         {
             currPos = (Vector3)stream.ReceiveNext();
             currRot = (Quaternion)stream.ReceiveNext();
+            SetPlayerName((string)stream.ReceiveNext());
         }
+    }
+    public void SetPlayerName(string name)
+    {
+        this.name = name;
+        GetComponent<PlayerCtrl>().playerName.text = this.name;
     }
 }
