@@ -52,10 +52,6 @@ public class PlayerCtrl : MonoBehaviour
                 animator.SetFloat("Speed", 0.0f);
             }
 
-            if (Input.GetButtonDown("Fire1")){
-                animator.SetTrigger("Attack");
-            }
-
         }
         else
         {
