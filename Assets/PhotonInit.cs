@@ -10,18 +10,42 @@ public class PhotonInit : Photon.PunBehaviour
     bool isGameStart = false;
     string playerName = "";
 
+    public string chatMessage;
+    Text chatText;
+    ScrollRect scroll_rect = null;
+    PhotonView pv;
     public void SetPlayerName()
     {
         Debug.Log(playerInput.text + "를 입력하셨습니다.");
-
-        playerName  = playerInput.text;
-        isGameStart = true;
+        if(isGameStart == false )
+        {
+            playerName = playerInput.text;
+            playerInput.text = string.Empty;
+            isGameStart = true;
+        }
+        else
+        {
+            chatMessage = playerInput.text;
+            pv.RPC("ChatInfo", PhotonTargets.All, chatMessage);
+            playerInput.text= string.Empty;
+            //ShowChat(chatMessage);
+        }
+        
     }
     private void Awake()
     {
         PhotonNetwork.ConnectUsingSettings("MyFps 1.0");
-    }
 
+        chatText = GameObject.Find("ChatText").GetComponent<Text>();
+        scroll_rect = GameObject.Find("Scroll View").GetComponent<ScrollRect>();
+    }
+    public void ShowChat(string chat)
+    {
+        //게임 시작중에는 채팅 메시지로 처리
+        chatText.text += chat + "\n";
+        //스크롤바의 위치를 제일 아래로 내려줌 1.0은 맨 위, 0.0은 맨 아래
+        scroll_rect.verticalNormalizedPosition = 0.0f;
+    }
     public override void OnJoinedLobby()
     {
         Debug.Log("Joined Lobby");
@@ -55,21 +79,18 @@ public class PhotonInit : Photon.PunBehaviour
             
         GameObject tempPlayer =  PhotonNetwork.Instantiate("Player", new Vector3(0,0,0), Quaternion.identity, 0);
         tempPlayer.GetComponent<PlayerCtrl>().SetPlayerName(playerName);
+        pv = GetComponent<PhotonView>();
         yield return null;
     }
     private void OnGUI()
     {
         GUILayout.Label(PhotonNetwork.connectionStateDetailed.ToString());
     }
-    // Start is called before the first frame update
-    void Start()
+
+    [PunRPC]
+    public void ChatInfo(string sChat, PhotonMessageInfo info)
     {
-        
+        ShowChat(sChat);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
