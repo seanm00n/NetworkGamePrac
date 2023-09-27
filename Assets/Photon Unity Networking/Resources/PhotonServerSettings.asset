@@ -44,4 +44,5 @@ MonoBehaviour:
   - RequestForPickupTimes
   - TaggedPlayer
   - ChatInfo
+  - FireRPC
   DisableAutoOpenWizard: 1

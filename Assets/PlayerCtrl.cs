@@ -16,6 +16,12 @@ public class PlayerCtrl : MonoBehaviour
     private Vector3 currPos;
     private Quaternion currRot;
 
+    public Transform firePos;
+    public GameObject bullet;
+    private bool isDie = false;
+    private int hp = 100;
+    private float respawnTime = 3.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +40,7 @@ public class PlayerCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (pv.isMine)
+        if (pv.isMine && isDie == false)
         {
             h = Input.GetAxis("Horizontal");
             v = Input.GetAxis("Vertical");
@@ -54,6 +60,7 @@ public class PlayerCtrl : MonoBehaviour
 
             if (Input.GetButtonDown("Fire1")){
                 animator.SetTrigger("Attack");
+                Fire();
             }
 
         }
@@ -88,9 +95,65 @@ public class PlayerCtrl : MonoBehaviour
             SetPlayerName((string)stream.ReceiveNext());
         }
     }
+
     public void SetPlayerName(string name)
     {
         this.name = name;
         GetComponent<PlayerCtrl>().playerName.text = this.name;
+    }
+
+    private void OnTriggerEnter(Collider coll)
+    {
+        Debug.Log("HIT!:" + coll.gameObject.tag);
+        if(coll.gameObject.tag == "BULLET")
+        {
+            Debug.Log("Hit");
+            Destroy(coll.gameObject);
+            hp -= 10;
+            animator.SetTrigger("Hit");
+            if (hp <= 0) {
+                animator.SetTrigger("Die");
+                StartCoroutine(RespawnPlayer(respawnTime));
+            }
+        }
+    }
+
+    IEnumerator RespawnPlayer(float waitTime)
+    {
+        Debug.Log("Died!");
+        isDie = true;
+        StartCoroutine(PlayerVisible(true, 0.5f));
+        yield return new WaitForSeconds(waitTime);
+
+        tr.position = new Vector3(Random.Range(-20.0f, 20.0f), 0.0f, Random.Range(-20.0f, 20.0f));
+        hp = 100;
+        isDie = false;
+        animator.SetTrigger("Reset");
+        StartCoroutine(PlayerVisible(true, 1.0f));
+    }
+
+    IEnumerator PlayerVisible(bool visibled, float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime);
+        GetComponentInChildren<MeshRenderer>().enabled = visibled;
+    }
+
+    IEnumerator CreateBullet()
+    {
+        GameObject bulletObject = Instantiate(bullet, firePos.position, firePos.rotation);
+        bulletObject.GetComponent<Bullet>().owner = name;
+        yield return null;
+    }
+
+    private void Fire()
+    {
+        StartCoroutine(CreateBullet());
+        pv.RPC("FireRPC", PhotonTargets.Others);
+    }
+
+    [PunRPC]
+    private void FireRPC()
+    {
+        StartCoroutine(CreateBullet());
     }
 }

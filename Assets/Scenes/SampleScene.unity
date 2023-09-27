@@ -1560,18 +1560,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 3162154374669078788, guid: 071f029e0424be74f8b7b52481127bc0, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3946591092161073858, guid: 071f029e0424be74f8b7b52481127bc0, type: 3}
-      propertyPath: viewIdField
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3946591092161073858, guid: 071f029e0424be74f8b7b52481127bc0, type: 3}
-      propertyPath: instantiationId
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2149,6 +2137,10 @@ PrefabInstance:
     - target: {fileID: 4873679214765935647, guid: 1ed11e97baf2a604bb18085c5f8dc512, type: 3}
       propertyPath: m_Name
       value: Dagger
+      objectReference: {fileID: 0}
+    - target: {fileID: 4873679214765935647, guid: 1ed11e97baf2a604bb18085c5f8dc512, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

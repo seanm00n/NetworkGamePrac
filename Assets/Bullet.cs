@@ -7,7 +7,7 @@ public class Bullet : MonoBehaviour
     public float speed = 30.0f;
     public float fireRange = 300.0f;
     public float damage = 10.0f;
-
+    public string owner = "";
     private Transform tr;
     private Vector3 spawnPoint;
 
