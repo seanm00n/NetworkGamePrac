@@ -134,6 +134,7 @@ MonoBehaviour:
   speed: 10
   fireRange: 300
   damage: 10
+  owner: 
 --- !u!54 &5081727614601687729
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -156,7 +157,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -224,7 +225,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.017
+  m_Time: 0.1
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -233,8 +234,8 @@ TrailRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.04811061
-        value: 0.17351905
+        time: 0.06985057
+        value: 0.13114536
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -242,8 +243,8 @@ TrailRenderer:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.94977707
-        value: 0.009132765
+        time: 0.75
+        value: 0
         inSlope: -0.16830061
         outSlope: -0.16830061
         tangentMode: 0

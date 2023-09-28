@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+
 
 public class PlayerCtrl : MonoBehaviour
 {
@@ -21,6 +23,7 @@ public class PlayerCtrl : MonoBehaviour
     private bool isDie = false;
     private int hp = 100;
     private float respawnTime = 3.0f;
+    private bool coolTime = false;
 
     // Start is called before the first frame update
     void Start()
@@ -33,8 +36,6 @@ public class PlayerCtrl : MonoBehaviour
 
         if (pv.isMine)
             Camera.main.GetComponent<FollowCam>().targetTr = tr.Find("Cube").gameObject.transform;
-
-        
     }
 
     // Update is called once per frame
@@ -59,8 +60,12 @@ public class PlayerCtrl : MonoBehaviour
             }
 
             if (Input.GetButtonDown("Fire1")){
-                animator.SetTrigger("Attack");
-                Fire();
+                if (coolTime != true)
+                {
+                    animator.SetTrigger("Attack");
+                    coolTime = true;
+                    Fire();
+                }
             }
 
         }
@@ -75,27 +80,12 @@ public class PlayerCtrl : MonoBehaviour
                 animator.SetFloat("Speed", 0.0f);
             }
         }
+        float t = Mathf.Clamp(Time.deltaTime * 10, 0f, 0.99f);
         tr.position = Vector3.Lerp(tr.position, currPos, Time.deltaTime*10.0f);
-        tr.rotation = Quaternion.Lerp(tr.rotation, currRot, Time.deltaTime *10.0f);//
+        tr.rotation = Quaternion.Lerp(tr.rotation, currRot, t);//
         
     }
     
-    private void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.isWriting)
-        {
-            stream.SendNext(tr.position);
-            stream.SendNext(tr.rotation);
-            stream.SendNext(name);
-        }
-        else
-        {
-            currPos = (Vector3)stream.ReceiveNext();
-            currRot = (Quaternion)stream.ReceiveNext();
-            SetPlayerName((string)stream.ReceiveNext());
-        }
-    }
-
     public void SetPlayerName(string name)
     {
         this.name = name;
@@ -104,10 +94,13 @@ public class PlayerCtrl : MonoBehaviour
 
     private void OnTriggerEnter(Collider coll)
     {
-        Debug.Log("HIT!:" + coll.gameObject.tag);
+        
+        if (coll.GetComponent<Bullet>().owner == this.name)
+            return;         
+        
         if(coll.gameObject.tag == "BULLET")
         {
-            Debug.Log("Hit");
+            Debug.Log("Hit!:" + coll.GetComponent<Bullet>().owner);
             Destroy(coll.gameObject);
             hp -= 10;
             animator.SetTrigger("Hit");
@@ -142,7 +135,8 @@ public class PlayerCtrl : MonoBehaviour
     {
         GameObject bulletObject = Instantiate(bullet, firePos.position, firePos.rotation);
         bulletObject.GetComponent<Bullet>().owner = name;
-        yield return null;
+        yield return new WaitForSeconds(1.5f);
+        coolTime = false;
     }
 
     private void Fire()
@@ -155,5 +149,23 @@ public class PlayerCtrl : MonoBehaviour
     private void FireRPC()
     {
         StartCoroutine(CreateBullet());
+    }
+    
+    private void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) //for chatting
+    {
+        if (stream.isWriting)
+        {
+            stream.SendNext(tr.position);
+            stream.SendNext(tr.rotation);
+            stream.SendNext(name);
+            Debug.Log("send");
+        }
+        else
+        {
+            currPos = (Vector3)stream.ReceiveNext();
+            currRot = (Quaternion)stream.ReceiveNext();
+            SetPlayerName((string)stream.ReceiveNext());
+            Debug.Log("moving");
+        }
     }
 }

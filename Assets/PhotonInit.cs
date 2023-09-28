@@ -32,6 +32,7 @@ public class PhotonInit : Photon.PunBehaviour
         }
         
     }
+    
     private void Awake()
     {
         PhotonNetwork.ConnectUsingSettings("MyFps 1.0");
@@ -48,26 +49,29 @@ public class PhotonInit : Photon.PunBehaviour
     }
     public override void OnJoinedLobby()
     {
+        base.OnJoinedLobby();//추가
         Debug.Log("Joined Lobby");
         PhotonNetwork.JoinRandomRoom();
     }
     
     public override void OnPhotonRandomJoinFailed(object[] codeAndMsg)
     {
+        base.OnPhotonJoinRoomFailed(codeAndMsg);//추가
         Debug.Log("No Room");
         PhotonNetwork.CreateRoom("My Room");
     }
 
     public override void OnCreatedRoom()
     {
+        base.OnCreatedRoom();//추가
         Debug.Log("Finish make a room");
     }
 
     public override void OnJoinedRoom()
     {
+        base.OnJoinedRoom();
         Debug.Log("Joined room");
         StartCoroutine(this.CreatePlayer());
-        
     }
 
     IEnumerator CreatePlayer()
@@ -77,7 +81,7 @@ public class PhotonInit : Photon.PunBehaviour
             yield return new WaitForSeconds(0.5f);
         }
             
-        GameObject tempPlayer =  PhotonNetwork.Instantiate("Player", new Vector3(0,0,0), Quaternion.identity, 0);
+        GameObject tempPlayer =  PhotonNetwork.Instantiate("Player", new Vector3(0,1,0), Quaternion.identity, 0);
         tempPlayer.GetComponent<PlayerCtrl>().SetPlayerName(playerName);
         pv = GetComponent<PhotonView>();
         yield return null;
