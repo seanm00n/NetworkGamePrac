@@ -1106,7 +1106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13bfd0bd30fc7a64c840cadb5d79d906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTr: {fileID: 0}
+  targetTr: {fileID: 774566161797108892, guid: 071f029e0424be74f8b7b52481127bc0, type: 3}
   dist: 3.5
   height: 0.3
   dampTrace: 20

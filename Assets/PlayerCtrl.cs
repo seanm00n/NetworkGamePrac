@@ -115,7 +115,7 @@ public class PlayerCtrl : MonoBehaviour
     {
         Debug.Log("Died!");
         isDie = true;
-        StartCoroutine(PlayerVisible(true, 0.5f));
+        StartCoroutine(PlayerVisible(false, 0.5f));
         yield return new WaitForSeconds(waitTime);
 
         tr.position = new Vector3(Random.Range(-20.0f, 20.0f), 0.0f, Random.Range(-20.0f, 20.0f));
