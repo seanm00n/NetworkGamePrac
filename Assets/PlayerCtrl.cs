@@ -158,14 +158,12 @@ public class PlayerCtrl : MonoBehaviour
             stream.SendNext(tr.position);
             stream.SendNext(tr.rotation);
             stream.SendNext(name);
-            Debug.Log("send");
         }
         else
         {
             currPos = (Vector3)stream.ReceiveNext();
             currRot = (Quaternion)stream.ReceiveNext();
             SetPlayerName((string)stream.ReceiveNext());
-            Debug.Log("moving");
         }
     }
 }
