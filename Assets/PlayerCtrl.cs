@@ -69,20 +69,25 @@ public class PlayerCtrl : MonoBehaviour
             }
 
         }
-        else
+        else if(!pv.isMine)//수정
         {
             if (tr.position != currPos)
             {
                 animator.SetFloat("Speed", 1.0f);
+                tr.position = Vector3.Lerp(tr.position, currPos, Time.deltaTime * 10.0f);//추가
             }
             else
             {
                 animator.SetFloat("Speed", 0.0f);
             }
+
+            if (tr.rotation != currRot)
+            {
+                float t = Mathf.Clamp(Time.deltaTime * 10, 0f, 0.99f);
+                tr.rotation = Quaternion.Lerp(tr.rotation, currRot, t);//옮김
+            }
         }
-        float t = Mathf.Clamp(Time.deltaTime * 10, 0f, 0.99f);
-        tr.position = Vector3.Lerp(tr.position, currPos, Time.deltaTime*10.0f);
-        tr.rotation = Quaternion.Lerp(tr.rotation, currRot, t);//
+
         
     }
     

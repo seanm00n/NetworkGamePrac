@@ -81,7 +81,7 @@ public class PhotonInit : Photon.PunBehaviour
             yield return new WaitForSeconds(0.5f);
         }
             
-        GameObject tempPlayer =  PhotonNetwork.Instantiate("Player", new Vector3(0,1,0), Quaternion.identity, 0);
+        GameObject tempPlayer =  PhotonNetwork.Instantiate("Player", new Vector3(0,0,0), Quaternion.identity, 0);
         tempPlayer.GetComponent<PlayerCtrl>().SetPlayerName(playerName);
         pv = GetComponent<PhotonView>();
         yield return null;
